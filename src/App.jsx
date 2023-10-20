@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import InscriptionModal from "./components/InscriptionModal";
 import ConnexionModal from "./components/ConnexionModal";
+import PrivateHome from "./pages/Private/PrivateHome"
 
 function App() {
   const { modalState } = useContext(UserContext)
@@ -14,6 +15,9 @@ function App() {
       <Navbar></Navbar>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/private" element={<PrivateHome />}>
+
+        </Route>
       </Routes>
       {/* Les modales sont placées en bas pour que le CSS fonctionne si on utilise le portal pour les gérer */}
       {modalState.signUpModal && <InscriptionModal></InscriptionModal>}
