@@ -10,52 +10,50 @@ export function UserContextProvider(props) {
     const [currentUser, setCurrentUser] = useState();
     const [persistenceMode, setPersistenceMode] = useState(false);
     const [loadingData, setLoadingData] = useState(true);
+    const navigate = useNavigate()
 
     const togglePersistenceMode = () => {
         setPersistenceMode(!persistenceMode)
     }
 
+    // Inscription
     const signUp = (email, pwd) => {
-        if (persistenceMode) {
-            setPersistence(auth, browserLocalPersistence)
-                .then(() =>
-                    createUserWithEmailAndPassword(auth, email, pwd)
-                )
-        }
-        else {
-            setPersistence(auth, browserSessionPersistence)
-                .then(() =>
-                    createUserWithEmailAndPassword(auth, email, pwd)
-                )
-        }
+        // if (persistenceMode) {
+        setPersistence(auth, persistenceMode ? browserLocalPersistence : browserSessionPersistence)
+            .then(() => createUserWithEmailAndPassword(auth, email, pwd))
+            .then(() => navigate("/private/privateHome/PrivateHome.jsx"))
+        // }
+        // else {
+        //     setPersistence(auth, browserSessionPersistence)
+        //         .then(() =>
+        //             createUserWithEmailAndPassword(auth, email, pwd)
+        //         )
+        // }
 
     }
 
+    // Connexion
     const signIn = (email, pwd) => {
-        if (persistenceMode) {
-            setPersistence(auth, browserLocalPersistence)
-                .then(() =>
-                    signInWithEmailAndPassword(auth, email, pwd)
-                )
-        }
-        else {
-            setPersistence(auth, browserSessionPersistence)
-                .then(() =>
-                    signInWithEmailAndPassword(auth, email, pwd)
-                )
-        }
-        //signInWithEmailAndPassword(auth, email, pwd)
+        // if (persistenceMode) {
+        setPersistence(auth, persistenceMode ? browserLocalPersistence : browserSessionPersistence)
+            .then(() => signInWithEmailAndPassword(auth, email, pwd))
+            .then(() => navigate("/private/privateHome/PrivateHome.jsx"))
+        // }
+        // else {
+        //     setPersistence(auth, browserSessionPersistence)
+        //         .then(() =>
+        //             signInWithEmailAndPassword(auth, email, pwd)
+        //         )
+        // }
     }
 
-    const navigate = useNavigate()
-
+    // Deconnexion
     const logOut = async () => {
         console.log("Tentative de deconnexion")
         try {
             await signOut(auth)
             navigate("/")
             console.log("Deconnexion réussie")
-            //console.log("currentUser : ", currentUser)
         }
         catch (error) {
             console.log(error.name)
@@ -64,6 +62,7 @@ export function UserContextProvider(props) {
         }
     }
 
+    // Gestion des modales d'inscription, connexion
     const [modalState, setModalState] = useState({
         signUpModal: false,
         signInModal: false
@@ -108,7 +107,7 @@ export function UserContextProvider(props) {
 
     return (
         <UserContext.Provider value={{ signUp, signIn, toggleModals, modalState, currentUser, logOut, persistenceMode, togglePersistenceMode }}>
-            {props.children}
+            {!loadingData && props.children}
         </UserContext.Provider>
     )
 }
