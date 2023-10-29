@@ -33,7 +33,7 @@ export default function ConnexionModal() {
                 signInEmail.current.value,
                 signInPwd.current.value
             );
-            console.log(cred);
+            //console.log(cred);
             formRef.current.reset()
             toggleModals("close");
         }

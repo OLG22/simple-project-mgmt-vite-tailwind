@@ -18,33 +18,16 @@ export function UserContextProvider(props) {
 
     // Inscription
     const signUp = (email, pwd) => {
-        // if (persistenceMode) {
         setPersistence(auth, persistenceMode ? browserLocalPersistence : browserSessionPersistence)
             .then(() => createUserWithEmailAndPassword(auth, email, pwd))
-            .then(() => navigate("/private/privateHome/PrivateHome.jsx"))
-        // }
-        // else {
-        //     setPersistence(auth, browserSessionPersistence)
-        //         .then(() =>
-        //             createUserWithEmailAndPassword(auth, email, pwd)
-        //         )
-        // }
-
+            .then(() => navigate("/pages/private/privateHome"))
     }
 
     // Connexion
     const signIn = (email, pwd) => {
-        // if (persistenceMode) {
         setPersistence(auth, persistenceMode ? browserLocalPersistence : browserSessionPersistence)
             .then(() => signInWithEmailAndPassword(auth, email, pwd))
-            .then(() => navigate("/private/privateHome/PrivateHome.jsx"))
-        // }
-        // else {
-        //     setPersistence(auth, browserSessionPersistence)
-        //         .then(() =>
-        //             signInWithEmailAndPassword(auth, email, pwd)
-        //         )
-        // }
+            .then(() => navigate("/pages/private/privateHome"))
     }
 
     // Deconnexion

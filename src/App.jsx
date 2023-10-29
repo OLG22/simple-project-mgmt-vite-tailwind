@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import InscriptionModal from "./components/InscriptionModal";
 import ConnexionModal from "./components/ConnexionModal";
+import Private from "./pages/private/Private";
 import PrivateHome from "./pages/private/privateHome/PrivateHome";
 import Cards from "./pages/private/cards/Cards";
 import UserProfile from "./pages/private/userProfile/UserProfile";
@@ -18,10 +19,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/private" element={<Private />}>
-          <Route path="/private/privateHome" element={<PrivateHome />} />
-          <Route path="/private/userProfile" element={<UserProfile />} />
-          <Route path="/private/cards" element={<Cards />} />
+        <Route path="pages/private" element={<Private />}>
+          <Route path="privateHome" element={<PrivateHome />} />
+          <Route path="cards" element={<Cards />} />
+          <Route path="userProfile" element={<UserProfile />} />
         </Route>
       </Routes>
       {/* Les modales sont placées en bas pour que le CSS fonctionne si on utilise le portal pour les gérer */}
