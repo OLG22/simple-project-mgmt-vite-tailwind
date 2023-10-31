@@ -10,6 +10,7 @@ import Private from "./pages/private/Private";
 import PrivateHome from "./pages/private/privateHome/PrivateHome";
 import Cards from "./pages/private/cards/Cards";
 import UserProfile from "./pages/private/userProfile/UserProfile";
+import Sidebar from './components/Sidebar';
 
 function App() {
   const { modalState } = useContext(UserContext)
@@ -17,6 +18,7 @@ function App() {
   return (
     <>
       <Navbar />
+      {/* <Sidebar /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="pages/private" element={<Private />}>
