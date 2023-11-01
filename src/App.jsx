@@ -11,8 +11,9 @@ import PrivateHome from "./pages/private/privateHome/PrivateHome";
 import Cards from "./pages/private/cards/Cards";
 import UserProfile from "./pages/private/userProfile/UserProfile";
 import Sidebar from './components/Sidebar';
+import AddCard from './pages/private/cards/AddCard';
 
-function App() {
+export default function App() {
   const { modalState } = useContext(UserContext)
 
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="pages/private" element={<Private />}>
           <Route path="privateHome" element={<PrivateHome />} />
           <Route path="cards" element={<Cards />} />
+          <Route path="addCard" element={<AddCard />} />
           <Route path="userProfile" element={<UserProfile />} />
         </Route>
       </Routes>
@@ -33,5 +35,3 @@ function App() {
     </>
   )
 }
-
-export default App

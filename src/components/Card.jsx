@@ -23,7 +23,7 @@ export default function Card({ subject, date, status, owner, cardId }) {
 
     return (
         <>
-            <div className="w-full px-4 m-2 bg-white border border-gray-200 rounded-lg shadow-[5px_5px_10px_0px_rgba(0,0,0,0.3)] dark:bg-gray-800 dark:border-gray-700">
+            <div className="w-auto px-4 my-2 bg-white border border-gray-200 rounded-lg shadow-[5px_5px_10px_0px_rgba(0,0,0,0.3)] dark:bg-gray-800 dark:border-gray-700">
                 <div className="flex justify-center items-center">
                     <div className="text-[14px] leading-10 w-full font-bold truncate text-gray-900 dark:text-white" onClick={toggleExpansion}>{subject}</div>
                     <div className="relative max-w-sm">
