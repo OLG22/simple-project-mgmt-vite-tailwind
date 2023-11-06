@@ -18,32 +18,39 @@ export default function Cards() {
     const getAllCards = async () => {
       setLoading(true);
 
-      await getDocs(collection(db, "subjects")).then((querySnapshot) => {
-        const data = querySnapshot.docs.map((doc) => ({
-          title: doc.data().title,
-          eventDate: doc.data().eventDate,
-          status: doc.data().status,
-          owner: doc.data().owner,
-          description: doc.data().description,
-          cardId: doc.id,
-        }));
+      try {
 
-        setCardsData([...data]); // Il faut déstructurer le tableau pour le restructurer dans un tableau afin que le state fonctionne, on ne peut pas utiliser directement data
-      });
+        await getDocs(collection(db, "subjects")).then((querySnapshot) => {
+          const data = querySnapshot.docs.map((doc) => ({
+            title: doc.data().title,
+            eventDate: doc.data().eventDate,
+            status: doc.data().status,
+            owner: doc.data().owner,
+            description: doc.data().description,
+            cardId: doc.id,
+          }));
+          setCardsData([...data]); // Il faut déstructurer le tableau pour le restructurer dans un tableau afin que le state fonctionne, on ne peut pas utiliser directement data
+        });
 
-      await delay(1000);
+        await delay(1000);
 
-      console.log("1. cardsData :", cardsData);
+        //console.log("1. cardsData :", cardsData);
 
-      setLoading(false);
-    };
+        setLoading(false);
+      }
+
+      catch (error) {
+        console.log("Une erreur est survenue : ", error.name);
+        console.log("Une erreur est survenue : ", error.message);
+      }
+    }
 
     getAllCards();
 
     //console.log(cardsData);
     //console.log(cardsList);
 
-    console.log("2. cardsData :", cardsData);
+    //console.log("2. cardsData :", cardsData);
   }, []);
 
   const navigate = useNavigate();
