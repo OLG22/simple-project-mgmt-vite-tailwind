@@ -15,6 +15,9 @@ export default function Cards() {
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  {/**************************************************************************
+    * INITIALISATION
+   **************************************************************************/}
   useEffect(() => {
     const getAllCards = async () => {
       setLoading(true);
@@ -54,16 +57,19 @@ export default function Cards() {
     //console.log("2. cardsData :", cardsData);
   }, []);
 
+  {/**************************************************************************
+   * NAVIGATE
+   **************************************************************************/}
   const navigate = useNavigate();
+
+  {/**************************************************************************
+   * RENDER
+   **************************************************************************/}
 
   return (
     <>
       <div className="flex justify-end items-center py-5 px-10">
-        <button
-          type="button"
-          className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          onClick={() => navigate("../addCard")}
-        >
+        <button type="button" className="rounded-lg text-[14px] px-5 py-1.5 text-center text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium " onClick={() => navigate("../addCard")}>
           Ajouter un sujet
         </button>
       </div>
