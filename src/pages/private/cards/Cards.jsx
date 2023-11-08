@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Card from "../../../components/Card";
+import SubjectCard from "../../../components/SubjectCard";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../../firebase-config";
 import { doc, getDocs, collection } from "firebase/firestore";
@@ -81,7 +81,7 @@ export default function Cards() {
       {!loading && (
         <div className="px-10 w-full ">
           {cardsData.map((card) => (
-            <Card {...card} key={card.cardId} />
+            <SubjectCard {...card} key={card.cardId} />
           ))}
         </div>
       )}
