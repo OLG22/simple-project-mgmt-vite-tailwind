@@ -265,13 +265,9 @@ export default function SubjectCard({ cardId }) {
                   <div className="m-auto w-1/3 border-t border-gray-200 group-hover:border-gray-100" ></div>
                   <div className="flex justify-between items-center">
 
-                    {/* <span className="text-[12px] font-medium px-2.5 py-0.5 rounded bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-[1px] border-blue-200">
-                      {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {historicalDoc.data().userId} a écrit :
-                    </span> */}
                     <span className="text-[12px] px-3 rounded bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-[1px] border-blue-200 ">
                       {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {historicalDoc.data().userId} a écrit :
                     </span>
-
 
                     <div className="mr-2">
                       {/* Bouton MODIFY */}
@@ -294,7 +290,7 @@ export default function SubjectCard({ cardId }) {
                   {/* MODIFY HISTORICAL */}
                   <div className="">
                     {modifyingElement !== historicalDoc.id && (
-                      <p className="w-full pb-2 px-2.5 text-sm text-gray-500 dark:text-gray-400">
+                      <p className="w-full pb-2 px-2.5 text-sm text-justify text-gray-500 dark:text-gray-400">
                         {historicalDoc.data().description}
                       </p>
                     )}
