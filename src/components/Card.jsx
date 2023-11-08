@@ -11,7 +11,7 @@ export default function Card({ title, eventDate, status, owner, description, car
   const [historical, setHistorical] = useState([]);
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const [modifyingHistorical, setModifyingHistorical] = useState();
+  const [modifyingElement, setModifyingElement] = useState();
   //   const [notes, setNotes] = useState([]);
   //   const [editableSubject, setEditableSubject] = useState(title);
   //   const [editableDate, setEditableDate] = useState(eventDate);
@@ -23,6 +23,7 @@ export default function Card({ title, eventDate, status, owner, description, car
   **************************************************************************/
   const updateContent = useRef("updateContent")
   const updateContentHistorical = useRef("updateContentHistorical")
+  const updateContentSubject = useRef("updateContentSubject")
 
   /**************************************************************************
   * useffect
@@ -69,7 +70,7 @@ export default function Card({ title, eventDate, status, owner, description, car
           userId: "Virginie",
           updateDate: new Date()
         });
-        await delay(2000)
+        //await delay(2000)
         await getHistorical()
       } catch (error) {
         console.log("Une erreur est survenue : ", error.name);
@@ -107,7 +108,7 @@ export default function Card({ title, eventDate, status, owner, description, car
         description: updateContentHistorical.current.value
       })
       console.log("updateContentHistorical.current.value : ", updateContentHistorical.current.value);
-      await delay(2000)
+      //await delay(2000)
       await getHistorical()
     }
     catch (error) {
@@ -115,15 +116,15 @@ export default function Card({ title, eventDate, status, owner, description, car
       console.log("Une erreur est survenue : ", error.message);
     }
 
-    setModifyingHistorical(undefined)
+    setModifyingElement(undefined)
     setUpdating(undefined);
   }
 
   /**************************************************************************
   * Ouvrir ou ferme le forumlaire de modification d'une note de l'historique
   **************************************************************************/
-  const toggleModifyingHistorical = (docId) => {
-    modifyingHistorical !== docId ? setModifyingHistorical(docId) : setModifyingHistorical(undefined)
+  const toggleModifyingElement = (docId) => {
+    modifyingElement !== docId ? setModifyingElement(docId) : setModifyingElement(undefined)
   }
 
   /**************************************************************************
@@ -153,7 +154,7 @@ export default function Card({ title, eventDate, status, owner, description, car
 
   return (
     <>
-      <div className="w-auto mx-auto max-w-5xl px-4 my-2 bg-white border border-gray-200 rounded-lg shadow-lg  dark:bg-gray-800 dark:border-gray-700">
+      <div className="w-auto mx-auto max-w-5xl px-4 my-2 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
 
         <div className="flex justify-center items-center">
           {/* Titre */}
@@ -183,71 +184,106 @@ export default function Card({ title, eventDate, status, owner, description, car
           <>
 
             {/* Description */}
-            <p className="pt-5 border-t border-gray-200"></p>
-            <p className="mb-5 p-2 text-base text-gray-700 dark:text-gray-400 border-2 rounded-lg border-sky-200 bg-sky-50 text-justify font-normal">
-              {description}
-            </p>
+            {modifyingElement !== cardId && (
+              <>
+                <p className="pt-5 border-t border-gray-200"></p>
+                <div className="relative group mb-5 p-2 text-base text-gray-700 dark:text-gray-400 border-2 rounded-lg border-sky-200 bg-sky-50 text-justify font-normal">
+                  {description}
+                  <div className="absolute right-2 -top-3 group-hover:border-t-2 group-hover:border-x-2 rounded-t-lg group-hover:border-sky-200 group-hover:bg-sky-50 w-6 h-3 ">
+
+                  </div>
+                  <button className="absolute right-3 -top-2" onClick={() => toggleModifyingElement(cardId)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4  text-transparent group-hover:text-blue-500 group-hover/edit:text-blue-700">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                  </button>
+                </div>
+              </>
+            )}
+            {modifyingElement === cardId && (
+              <div className="my-1">
+                <form action="" className="flex w-full flex-wrap justify-end text-right" onSubmit={(e) => (true)}>
+                  <textarea ref={updateContentSubject} defaultValue={description} id="description" className="p-3 w-full text-xs text-gray-900 bg-gray-50 rounded-lg border border-sky-200 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Ecrivez içi les nouvelles informations"></textarea>
+                  <button type="submit" className="flex font-medium rounded-lg text-[12px] px-3 py-1 my-2 text-center justify-center text-white bg-gradient-to-r from-sky-500 via-sky-600 to-sky-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 shadow-lg shadow-sky-500/50 dark:shadow-lg dark:shadow-sky-800/80">
+                    {updating === cardId && (
+                      <>
+                        <Spinner width={3} height={3} />
+                        <span>
+                          Mise à jour ...
+                        </span>
+                      </>
+                    )}
+                    {updating !== cardId && ("Mettre à jour cette note")}
+                  </button>
+
+                </form>
+              </div>
+            )}
 
             {/* Historique */}
             {!loading && (
               historical.map((historicalDoc) => (
-                <div className="flex group hover:bg-gray-100 rounded-lg items-center box-border" key={historicalDoc.id}>
-                  <div className="block w-full pl-3">
-                    <div className="m-auto w-1/3 border-t border-gray-200"></div>
-                    <div className="flex justify-between mr-1 h-auto">
-                      <span className="text-xs font-medium h-auto mr-2 px-2.5 py-0.5 rounded bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-blue-200 border-[1px] ">
-                        {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {historicalDoc.data().userId} a écrit :
-                      </span>
-                      <div className="justify-end items-center mr-2">
+                <div className="w-full px-3 py-1 group hover:bg-gray-100 rounded-lg" key={historicalDoc.id}>
+                  {/* <div className="block w-full pl-3"> */}
+                  <div className="m-auto w-1/3 border-t border-gray-200 group-hover:border-gray-100" ></div>
+                  <div className="flex justify-between items-center">
 
-                        {/* Bouton MODIFY */}
-                        <button className="group/edit" onClick={() => toggleModifyingHistorical(historicalDoc.id)}>
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 ml-2 text-transparent group-hover:text-blue-500 group-hover/edit:text-blue-700">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                          </svg>
-                        </button>
+                    {/* <span className="text-[12px] font-medium px-2.5 py-0.5 rounded bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-[1px] border-blue-200">
+                      {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {historicalDoc.data().userId} a écrit :
+                    </span> */}
+                    <span className="text-[12px] px-3 rounded bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-[1px] border-blue-200 ">
+                      {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {historicalDoc.data().userId} a écrit :
+                    </span>
 
-                        {/* Bouton DELETE */}
-                        <button className="group/delete" onClick={() => deleteHistorical(historicalDoc.id)}>
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 ml-2 text-transparent group-hover:text-red-500 group-hover/delete:text-red-700">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-                          </svg>
-                        </button>
 
-                      </div>
+                    <div className="mr-2">
+                      {/* Bouton MODIFY */}
+                      <button className="group/edit ml-2" onClick={() => toggleModifyingElement(historicalDoc.id)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4  text-transparent group-hover:text-blue-500 group-hover/edit:text-blue-700">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                        </svg>
+                      </button>
 
-                    </div>
-
-                    {/* MODIFY HISTORICAL */}
-                    <div className="">
-                      {modifyingHistorical !== historicalDoc.id && (
-                        <p className="w-full mb-2 px-2.5 text-sm text-gray-500 dark:text-gray-400">
-                          {historicalDoc.data().description}
-                        </p>
-                      )}
-                      {modifyingHistorical === historicalDoc.id && (
-
-                        <div className="my-1">
-                          <form action="" className="flex w-full flex-wrap justify-end text-right" onSubmit={(e) => modifyHistorical(e, historicalDoc.id)}>
-                            <textarea ref={updateContentHistorical} defaultValue={historicalDoc.data().description} id="description" className="p-3 w-full text-xs text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Ecrivez içi les nouvelles informations"></textarea>
-                            <button type="submit" className="flex font-medium rounded-lg text-[12px] px-3 py-1 my-2 text-center justify-center text-white bg-gradient-to-r from-sky-500 via-sky-600 to-sky-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 shadow-lg shadow-sky-500/50 dark:shadow-lg dark:shadow-sky-800/80">
-                              {updating === historicalDoc.id && (
-                                <>
-                                  <Spinner width={3} height={3} />
-                                  <span>
-                                    Mise à jour ...
-                                  </span>
-                                </>
-                              )}
-                              {updating !== historicalDoc.id && ("Mettre à jour cette note")}
-                            </button>
-
-                          </form>
-                        </div>
-                      )}
+                      {/* Bouton DELETE */}
+                      <button className="group/delete ml-2" onClick={() => deleteHistorical(historicalDoc.id)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4  text-transparent group-hover:text-red-500 group-hover/delete:text-red-700">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                        </svg>
+                      </button>
                     </div>
 
                   </div>
+
+                  {/* MODIFY HISTORICAL */}
+                  <div className="">
+                    {modifyingElement !== historicalDoc.id && (
+                      <p className="w-full pb-2 px-2.5 text-sm text-gray-500 dark:text-gray-400">
+                        {historicalDoc.data().description}
+                      </p>
+                    )}
+                    {modifyingElement === historicalDoc.id && (
+
+                      <div className="my-1">
+                        <form action="" className="flex w-full flex-wrap justify-end text-right" onSubmit={(e) => modifyHistorical(e, historicalDoc.id)}>
+                          <textarea ref={updateContentHistorical} defaultValue={historicalDoc.data().description} id="description" className="p-3 w-full text-xs text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Ecrivez içi les nouvelles informations"></textarea>
+                          <button type="submit" className="flex font-medium rounded-lg text-[12px] px-3 py-1 my-2 text-center justify-center text-white bg-gradient-to-r from-sky-500 via-sky-600 to-sky-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 shadow-lg shadow-sky-500/50 dark:shadow-lg dark:shadow-sky-800/80">
+                            {updating === historicalDoc.id && (
+                              <>
+                                <Spinner width={3} height={3} />
+                                <span>
+                                  Mise à jour ...
+                                </span>
+                              </>
+                            )}
+                            {updating !== historicalDoc.id && ("Mettre à jour cette note")}
+                          </button>
+
+                        </form>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* </div> */}
                 </div>
               ))
             )}
