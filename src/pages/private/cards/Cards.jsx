@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from "react";
-import SubjectCard from "../../../components/SubjectCard";
 import { useNavigate } from "react-router-dom";
-import { db } from "../../../firebase-config";
-import { doc, getDocs, collection } from "firebase/firestore";
+import SubjectCard from "../../../components/SubjectCard";
 import Spinner from "../../../components/Spinner";
-
-{
-  /* export default Card; */
-}
+import { db } from "../../../firebase-config";
+import { getDocs, collection } from "firebase/firestore";
 
 export default function Cards() {
   const [loading, setLoading] = useState(false);
   const [cardsData, setCardsData] = useState([]);
 
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  //const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   {/**************************************************************************
     * INITIALISATION
@@ -23,38 +19,25 @@ export default function Cards() {
       setLoading(true);
 
       try {
-
         await getDocs(collection(db, "subjects")).then((querySnapshot) => {
-          const data = querySnapshot.docs.map((doc) => ({
-            title: doc.data().title,
-            eventDate: doc.data().eventDate,
-            status: doc.data().status,
-            owner: doc.data().owner,
-            description: doc.data().description,
-            cardId: doc.id,
-          }));
+          const data = querySnapshot.docs.map((doc) => doc.id);
+          console.log(data)
           setCardsData([...data]); // Il faut déstructurer le tableau pour le restructurer dans un tableau afin que le state fonctionne, on ne peut pas utiliser directement data
         });
 
-        //await delay(1000);
-
+        //await delay(1000)
         //console.log("1. cardsData :", cardsData);
-
-        setLoading(false);
       }
-
       catch (error) {
         console.log("Une erreur est survenue : ", error.name);
         console.log("Une erreur est survenue : ", error.message);
       }
+
+      setLoading(false);
     }
 
     getAllCards();
 
-    //console.log(cardsData);
-    //console.log(cardsList);
-
-    //console.log("2. cardsData :", cardsData);
   }, []);
 
   {/**************************************************************************
@@ -80,9 +63,7 @@ export default function Cards() {
       )}
       {!loading && (
         <div className="px-10 w-full ">
-          {cardsData.map((card) => (
-            <SubjectCard {...card} key={card.cardId} />
-          ))}
+          {cardsData.map((subjectId) => <SubjectCard subjectId={subjectId} key={subjectId} /> )}
         </div>
       )}
     </>

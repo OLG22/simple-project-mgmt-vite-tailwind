@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { db } from "../firebase-config";
 import { doc, addDoc, getDoc, getDocs, collection, query, orderBy, deleteDoc, updateDoc } from "firebase/firestore";
 import Spinner, { delay } from "./Spinner";
+import Todo from "./Todo";
 
-export default function SubjectCard({ cardId }) {
+export default function SubjectCard({ subjectId }) {
   /**************************************************************************
   * States
   **************************************************************************/
@@ -34,8 +35,7 @@ export default function SubjectCard({ cardId }) {
   **************************************************************************/
   async function getSubjectMainData() {
     try {
-      const response = await getDoc(doc(db, "subjects", cardId));
-      //console.log(response.data());
+      const response = await getDoc(doc(db, "subjects", subjectId));
       setSubjectInfo(response.data())
     }
     catch (error) {
@@ -52,11 +52,10 @@ export default function SubjectCard({ cardId }) {
 
     try {
       //Les 3 étapes pour obtenir les document d'une sous-collection
-      const docRef = doc(db, "subjects", cardId);
+      const docRef = doc(db, "subjects", subjectId);
       const colHist = query(collection(docRef, "historical"), orderBy("updateDate", "asc"))
       const historicalDocs = await getDocs(colHist)
         .then((QueryDocumentSnapshot) => setHistorical(QueryDocumentSnapshot.docs))
-      //console.log(historicalDocs);
     }
     catch (error) {
       console.log("Une erreur est survenue : ", error.name);
@@ -77,12 +76,11 @@ export default function SubjectCard({ cardId }) {
       setUpdating("addHistorical");
 
       try {
-        const docRef = await addDoc(collection(doc(db, "subjects", cardId), "historical"), {
+        const docRef = await addDoc(collection(doc(db, "subjects", subjectId), "historical"), {
           description: updateContent.current.value,
           userId: "Virginie",
           updateDate: new Date()
         });
-        //await delay(2000)
         await getHistorical()
       } catch (error) {
         console.log("Une erreur est survenue : ", error.name);
@@ -98,8 +96,7 @@ export default function SubjectCard({ cardId }) {
   **************************************************************************/
   const deleteHistorical = async (docId) => {
     try {
-      await deleteDoc(doc(db, "subjects", cardId, "historical", docId))
-      //console.log("Deleting : ", docId);
+      await deleteDoc(doc(db, "subjects", subjectId, "historical", docId))
       await getHistorical()
     }
     catch (error) {
@@ -116,11 +113,10 @@ export default function SubjectCard({ cardId }) {
     setUpdating(docId);
 
     try {
-      await updateDoc(doc(db, "subjects", cardId, "historical", docId), {
+      await updateDoc(doc(db, "subjects", subjectId, "historical", docId), {
         description: updateContentHistorical.current.value
       })
       console.log("updateContentHistorical.current.value : ", updateContentHistorical.current.value);
-      //await delay(2000)
       await getHistorical()
     }
     catch (error) {
@@ -135,16 +131,14 @@ export default function SubjectCard({ cardId }) {
   /**************************************************************************
   * Modifier une descripion de sujet
   **************************************************************************/
-  const modifyDescription = async (e, cardId) => {
+  const modifyDescription = async (e, subjectId) => {
     e.preventDefault();
-    setUpdating(cardId);
+    setUpdating(subjectId);
 
     try {
-      await updateDoc(doc(db, "subjects", cardId), {
+      await updateDoc(doc(db, "subjects", subjectId), {
         description: updateContentSubject.current.value
       })
-      console.log("updateContentHistorical.current.value : ", updateContentSubject.current.value);
-      //await delay(2000)
       await getHistorical()
       getSubjectMainData()
     }
@@ -172,7 +166,6 @@ export default function SubjectCard({ cardId }) {
     if (historical.length === 0) {
       try {
         await getHistorical().then(() => console.log("historical :", historical))
-        console.log("1. historical :", historical)
       }
       catch (error) {
         console.log("Une erreur est survenue : ", error.name);
@@ -221,14 +214,14 @@ export default function SubjectCard({ cardId }) {
           <>
 
             {/* Description */}
-            {modifyingElement !== cardId && (
+            {modifyingElement !== subjectId && (
               <>
                 <p className="pt-5 border-t border-gray-200"></p>
                 <div className="relative group mb-5 p-2 text-base text-gray-700 dark:text-gray-400 border rounded-lg border-sky-200 bg-sky-50 text-justify font-normal">
                   {subjectInfo.description}
                   <div className="absolute right-2 -top-3 group-hover:border-t group-hover:border-x rounded-t-lg group-hover:border-sky-200 group-hover:bg-sky-50 w-6 h-3 ">
                   </div>
-                  <button className="absolute group/edit right-3 -top-2" onClick={() => toggleModifyingElement(cardId)}>
+                  <button className="absolute group/edit right-3 -top-2" onClick={() => toggleModifyingElement(subjectId)}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4  text-transparent group-hover:text-blue-500 group-hover/edit:text-blue-700">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                     </svg>
@@ -236,13 +229,13 @@ export default function SubjectCard({ cardId }) {
                 </div>
               </>
             )}
-            {modifyingElement === cardId && (
+            {modifyingElement === subjectId && (
               <div className="my-1">
-                <form action="" className="flex w-full flex-wrap justify-end text-right" onSubmit={(e) => modifyDescription(e, cardId)}>
+                <form action="" className="flex w-full flex-wrap justify-end text-right" onSubmit={(e) => modifyDescription(e, subjectId)}>
                   <textarea ref={updateContentSubject} defaultValue={subjectInfo.description} id="description" row={`${subjectInfo.description.split("\r\n|\r|\n").length}`} className="p-3 w-full text-base text-gray-900 bg-gray-50 rounded-lg border border-sky-200 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Ecrivez içi les nouvelles informations"></textarea>
-                  <button type="cancel" className="flex font-medium rounded-lg text-[12px] px-3 py-1 my-2 mr-3 text-center justify-center text-white bg-gradient-to-r from-slate-500 via-slate-600 to-slate-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-slate-300 dark:focus:ring-slate-800 shadow-lg shadow-slate-500/50 dark:shadow-lg dark:shadow-slate-800/80" onClick={() => toggleModifyingElement(cardId)}>Annuler</button>
+                  <button type="cancel" className="flex font-medium rounded-lg text-[12px] px-3 py-1 my-2 mr-3 text-center justify-center text-white bg-gradient-to-r from-slate-500 via-slate-600 to-slate-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-slate-300 dark:focus:ring-slate-800 shadow-lg shadow-slate-500/50 dark:shadow-lg dark:shadow-slate-800/80" onClick={() => toggleModifyingElement(subjectId)}>Annuler</button>
                   <button type="submit" className="flex font-medium rounded-lg text-[12px] px-3 py-1 my-2 text-center justify-center text-white bg-gradient-to-r from-sky-500 via-sky-600 to-sky-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 shadow-lg shadow-sky-500/50 dark:shadow-lg dark:shadow-sky-800/80">
-                    {updating === cardId && (
+                    {updating === subjectId && (
                       <>
                         <Spinner width={3} height={3} />
                         <span>
@@ -250,12 +243,15 @@ export default function SubjectCard({ cardId }) {
                         </span>
                       </>
                     )}
-                    {updating !== cardId && ("Mettre à jour cette note")}
+                    {updating !== subjectId && ("Mettre à jour cette note")}
                   </button>
 
                 </form>
               </div>
             )}
+
+            {/* Todo */}
+            <Todo color={"yellow"} subjectId={"1"}/>
 
             {/* Historique */}
             {!loading && (
