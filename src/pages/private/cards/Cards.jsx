@@ -21,7 +21,6 @@ export default function Cards() {
       try {
         await getDocs(collection(db, "subjects")).then((querySnapshot) => {
           const data = querySnapshot.docs.map((doc) => doc.id);
-          console.log(data)
           setCardsData([...data]); // Il faut déstructurer le tableau pour le restructurer dans un tableau afin que le state fonctionne, on ne peut pas utiliser directement data
         });
 

@@ -10,7 +10,7 @@ export default function SubjectCard({ subjectId }) {
    *****************************************************************************************************
    * STATES
    *****************************************************************************************************
-  ******************************************************************************************************/
+  *****************************************************************************************************/
   const [subjectInfo, setSubjectInfo] = useState({});
   const [expanded, setExpanded] = useState(false);
   const [historical, setHistorical] = useState([]);
@@ -22,7 +22,7 @@ export default function SubjectCard({ subjectId }) {
    *****************************************************************************************************
    * REFERENCES
    *****************************************************************************************************
-  ******************************************************************************************************/
+  *****************************************************************************************************/
   const updateContent = useRef("updateContent")
   const updateContentHistorical = useRef("updateContentHistorical")
   const updateContentSubject = useRef("updateContentSubject")
@@ -31,7 +31,7 @@ export default function SubjectCard({ subjectId }) {
    *****************************************************************************************************
    * EFFECT
    *****************************************************************************************************
-  ******************************************************************************************************/
+  *****************************************************************************************************/
   useEffect(() => {
     getSubjectMainData()
     //console.log("modifyingElement :", modifyingElement);
@@ -41,7 +41,7 @@ export default function SubjectCard({ subjectId }) {
    *****************************************************************************************************
    * FUNCTIONS
    *****************************************************************************************************
-  ******************************************************************************************************/
+  *****************************************************************************************************/
 
   /**************************************************************************
   * Obtenir les données princpales du sujet
@@ -181,7 +181,7 @@ export default function SubjectCard({ subjectId }) {
     // A la première expansion, on charge l'historique
     if (historical.length === 0) {
       try {
-        await getHistorical().then(() => console.log("historical :", historical))
+        await getHistorical()//.then(() => console.log("historical :", historical))
       }
       catch (error) {
         console.log("Une erreur est survenue : ", error.name);
@@ -198,7 +198,7 @@ export default function SubjectCard({ subjectId }) {
    *****************************************************************************************************
    * RENDER
    *****************************************************************************************************
-  ******************************************************************************************************/
+  *****************************************************************************************************/
 
   return (
     <>
@@ -235,7 +235,7 @@ export default function SubjectCard({ subjectId }) {
             <SubjectDescription subjectId={subjectId} modifyingElement={modifyingElement} toggleModifyingElement={toggleModifyingElement} />
 
             {/* Todo */}
-            <SubjectTodo color={"yellow"} subjectId={"1"} />
+            <SubjectTodo subjectId={subjectId} />
 
             {/* Historique */}
             {!loading && (
