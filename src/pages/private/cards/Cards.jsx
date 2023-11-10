@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import SubjectCard from "../../../components/SubjectCard";
+import SubjectCard from "../../../components/SubjectCard/SubjectCard";
 import Spinner from "../../../components/Spinner";
 import { db } from "../../../firebase-config";
 import { getDocs, collection } from "firebase/firestore";
@@ -63,7 +63,7 @@ export default function Cards() {
       )}
       {!loading && (
         <div className="px-10 w-full ">
-          {cardsData.map((subjectId) => <SubjectCard subjectId={subjectId} key={subjectId} /> )}
+          {cardsData.map((subjectId) => <SubjectCard subjectId={subjectId} key={subjectId} />)}
         </div>
       )}
     </>

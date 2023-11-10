@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { db } from "../firebase-config";
+import { db } from "../../firebase-config";
 import { doc, addDoc, getDoc, getDocs, collection, query, orderBy, deleteDoc, updateDoc } from "firebase/firestore";
-import Spinner, { delay } from "./Spinner";
-import Todo from "./Todo";
+import Spinner, { delay } from "../Spinner";
+import SubjectTodo from "./SubjectTodo";
+import SubjectDescription from "./SubjectDescription";
 
 export default function SubjectCard({ subjectId }) {
-  /**************************************************************************
-  * States
-  **************************************************************************/
+  /*****************************************************************************************************
+   *****************************************************************************************************
+   * STATES
+   *****************************************************************************************************
+  ******************************************************************************************************/
   const [subjectInfo, setSubjectInfo] = useState({});
   const [expanded, setExpanded] = useState(false);
   const [historical, setHistorical] = useState([]);
@@ -15,20 +18,30 @@ export default function SubjectCard({ subjectId }) {
   const [updating, setUpdating] = useState(false);
   const [modifyingElement, setModifyingElement] = useState();
 
-  /**************************************************************************
-  * Ref
-  **************************************************************************/
+  /*****************************************************************************************************
+   *****************************************************************************************************
+   * REFERENCES
+   *****************************************************************************************************
+  ******************************************************************************************************/
   const updateContent = useRef("updateContent")
   const updateContentHistorical = useRef("updateContentHistorical")
   const updateContentSubject = useRef("updateContentSubject")
 
-  /**************************************************************************
-  * Effect
-  **************************************************************************/
+  /*****************************************************************************************************
+   *****************************************************************************************************
+   * EFFECT
+   *****************************************************************************************************
+  ******************************************************************************************************/
   useEffect(() => {
     getSubjectMainData()
-    console.log("subjectInfo :", subjectInfo);
+    //console.log("modifyingElement :", modifyingElement);
   }, []);
+
+  /*****************************************************************************************************
+   *****************************************************************************************************
+   * FUNCTIONS
+   *****************************************************************************************************
+  ******************************************************************************************************/
 
   /**************************************************************************
   * Obtenir les données princpales du sujet
@@ -155,7 +168,10 @@ export default function SubjectCard({ subjectId }) {
   * Ouvrir ou ferme le forumlaire de modification d'une note de l'historique
   **************************************************************************/
   const toggleModifyingElement = (docId) => {
+    console.log("AVANT docId :", docId)
+    console.log("AVANT modifyingElement :", modifyingElement)
     modifyingElement !== docId ? setModifyingElement(docId) : setModifyingElement(undefined)
+    console.log("APRES modifyingElement :", modifyingElement)
   }
 
   /**************************************************************************
@@ -178,9 +194,11 @@ export default function SubjectCard({ subjectId }) {
   };
 
 
-  /**************************************************************************
-  * RENDER
-  **************************************************************************/
+  /*****************************************************************************************************
+   *****************************************************************************************************
+   * RENDER
+   *****************************************************************************************************
+  ******************************************************************************************************/
 
   return (
     <>
@@ -214,44 +232,10 @@ export default function SubjectCard({ subjectId }) {
           <>
 
             {/* Description */}
-            {modifyingElement !== subjectId && (
-              <>
-                <p className="pt-5 border-t border-gray-200"></p>
-                <div className="relative group mb-5 p-2 text-base text-gray-700 dark:text-gray-400 border rounded-lg border-sky-200 bg-sky-50 text-justify font-normal">
-                  {subjectInfo.description}
-                  <div className="absolute right-2 -top-3 group-hover:border-t group-hover:border-x rounded-t-lg group-hover:border-sky-200 group-hover:bg-sky-50 w-6 h-3 ">
-                  </div>
-                  <button className="absolute group/edit right-3 -top-2" onClick={() => toggleModifyingElement(subjectId)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4  text-transparent group-hover:text-blue-500 group-hover/edit:text-blue-700">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                    </svg>
-                  </button>
-                </div>
-              </>
-            )}
-            {modifyingElement === subjectId && (
-              <div className="my-1">
-                <form action="" className="flex w-full flex-wrap justify-end text-right" onSubmit={(e) => modifyDescription(e, subjectId)}>
-                  <textarea ref={updateContentSubject} defaultValue={subjectInfo.description} id="description" row={`${subjectInfo.description.split("\r\n|\r|\n").length}`} className="p-3 w-full text-base text-gray-900 bg-gray-50 rounded-lg border border-sky-200 focus:ring-sky-500 focus:border-sky-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Ecrivez içi les nouvelles informations"></textarea>
-                  <button type="cancel" className="flex font-medium rounded-lg text-[12px] px-3 py-1 my-2 mr-3 text-center justify-center text-white bg-gradient-to-r from-slate-500 via-slate-600 to-slate-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-slate-300 dark:focus:ring-slate-800 shadow-lg shadow-slate-500/50 dark:shadow-lg dark:shadow-slate-800/80" onClick={() => toggleModifyingElement(subjectId)}>Annuler</button>
-                  <button type="submit" className="flex font-medium rounded-lg text-[12px] px-3 py-1 my-2 text-center justify-center text-white bg-gradient-to-r from-sky-500 via-sky-600 to-sky-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 shadow-lg shadow-sky-500/50 dark:shadow-lg dark:shadow-sky-800/80">
-                    {updating === subjectId && (
-                      <>
-                        <Spinner width={3} height={3} />
-                        <span>
-                          Mise à jour ...
-                        </span>
-                      </>
-                    )}
-                    {updating !== subjectId && ("Mettre à jour cette note")}
-                  </button>
-
-                </form>
-              </div>
-            )}
+            <SubjectDescription subjectId={subjectId} modifyingElement={modifyingElement} toggleModifyingElement={toggleModifyingElement} />
 
             {/* Todo */}
-            <Todo color={"yellow"} subjectId={"1"}/>
+            <SubjectTodo color={"yellow"} subjectId={"1"} />
 
             {/* Historique */}
             {!loading && (
@@ -275,8 +259,8 @@ export default function SubjectCard({ subjectId }) {
 
                       {/* Bouton DELETE */}
                       <button className="group/delete ml-2" onClick={() => deleteHistorical(historicalDoc.id)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4  text-transparent group-hover:text-red-500 group-hover/delete:text-red-700">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 20" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4  text-transparent group-hover:text-red-500 group-hover/delete:text-red-700">
+                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z" />
                         </svg>
                       </button>
                     </div>
