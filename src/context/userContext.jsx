@@ -6,31 +6,107 @@ import { useNavigate } from 'react-router-dom'
 export const UserContext = createContext()
 
 export function UserContextProvider(props) {
-
+    /*****************************************************************************************************
+     *****************************************************************************************************
+     * STATES
+     *****************************************************************************************************
+    *****************************************************************************************************/
     const [currentUser, setCurrentUser] = useState();
     const [persistenceMode, setPersistenceMode] = useState(false);
     const [loadingData, setLoadingData] = useState(true);
+    const [modalState, setModalState] = useState({
+        signUpModal: false,
+        signInModal: false
+    })
+
+    /*****************************************************************************************************
+     *****************************************************************************************************
+     * REFERENCES
+     *****************************************************************************************************
+    *****************************************************************************************************/
+
+    /*****************************************************************************************************
+     *****************************************************************************************************
+     * EFFECT
+     *****************************************************************************************************
+    *****************************************************************************************************/
+    //Ne s'execute qu'une fois car [] en 2e paramètre
+    useEffect(() => {
+
+        // onAuthStateChanged retourne une fonction de désabonnement à l'evennement
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setCurrentUser(currentUser)
+            setLoadingData(false)
+        })
+
+        // executé à la "destruction"
+        return unsubscribe;
+
+    }, [])
+
+    /*****************************************************************************************************
+     *****************************************************************************************************
+     * NAVIGATE
+     *****************************************************************************************************
+    *****************************************************************************************************/
     const navigate = useNavigate()
 
+    /*****************************************************************************************************
+     *****************************************************************************************************
+     * FUNCTIONS
+     *****************************************************************************************************
+    *****************************************************************************************************/
+
+    /**************************************************************************
+    * Validation du formulaire d'inscription
+    **************************************************************************/
+
+
+
+    /**************************************************************************
+    * Validation du formulaire d'inscription
+    **************************************************************************/
     const togglePersistenceMode = () => {
         setPersistenceMode(!persistenceMode)
     }
 
-    // Inscription
-    const signUp = (email, pwd) => {
-        setPersistence(auth, persistenceMode ? browserLocalPersistence : browserSessionPersistence)
-            .then(() => createUserWithEmailAndPassword(auth, email, pwd))
-            .then(() => navigate("/pages/private/privateHome"))
+    /**************************************************************************
+    * Inscription
+    **************************************************************************/
+    const signUp = async (email, pwd) => {
+        try {
+            await setPersistence(auth, persistenceMode ? browserLocalPersistence : browserSessionPersistence)
+            //.then(() => createUserWithEmailAndPassword(auth, email, pwd))
+            //.then(() => navigate("/pages/private/privateHome"))
+
+            const res = await createUserWithEmailAndPassword(auth, email, pwd)
+            const user = res.user;
+            await addDoc(collection(db, "users"), {
+                uid: user.uid,
+                authProvider: "local",
+                email: user.email,
+            })
+
+            navigate("/pages/private/privateHome")
+        }
+        catch (error) {
+            console.log("Une erreur est survenue : ", error.name);
+            console.log("Une erreur est survenue : ", error.message);
+        }
     }
 
-    // Connexion
+    /**************************************************************************
+    * Connexion
+    **************************************************************************/
     const signIn = (email, pwd) => {
         setPersistence(auth, persistenceMode ? browserLocalPersistence : browserSessionPersistence)
             .then(() => signInWithEmailAndPassword(auth, email, pwd))
             .then(() => navigate("/pages/private/privateHome"))
     }
 
-    // Deconnexion
+    /**************************************************************************
+    * Deconnexion
+    **************************************************************************/
     const logOut = async () => {
         console.log("Tentative de deconnexion")
         try {
@@ -45,12 +121,9 @@ export function UserContextProvider(props) {
         }
     }
 
-    // Gestion des modales d'inscription, connexion
-    const [modalState, setModalState] = useState({
-        signUpModal: false,
-        signInModal: false
-    })
-
+    /**************************************************************************
+    * Gestion des modales d'inscription, connexion
+    **************************************************************************/
     const toggleModals = modal => {
         switch (modal) {
             case "signUp":
@@ -74,20 +147,11 @@ export function UserContextProvider(props) {
         }
     }
 
-    //Ne s'execute qu'une fois car [] en 2e paramètre
-    useEffect(() => {
-
-        // onAuthStateChanged retourne une fonction de désabonnement à l'evennement
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setCurrentUser(currentUser)
-            setLoadingData(false)
-        })
-
-        // executé à la "destruction"
-        return unsubscribe;
-
-    }, [])
-
+    /*****************************************************************************************************
+     *****************************************************************************************************
+     * RENDER
+     *****************************************************************************************************
+    *****************************************************************************************************/
     return (
         <UserContext.Provider value={{ signUp, signIn, toggleModals, modalState, currentUser, logOut, persistenceMode, togglePersistenceMode }}>
             {!loadingData && props.children}
