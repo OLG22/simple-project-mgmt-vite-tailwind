@@ -1,19 +1,19 @@
 import React, { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../../firebase-config";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import Spinner from "../../../components/Spinner";
 import Input from "../../../components/Input"
 import { UserContext } from '../../../context/userContext'
 
 
-export default function UserProfile() {
+export default function UserDashboard() {
     /*****************************************************************************************************
      *****************************************************************************************************
      * CONTEXT
      *****************************************************************************************************
     *****************************************************************************************************/
-    const { currentUser, currentUserDataProfile, refreshUserDataProfile } = useContext(UserContext)
+    const { currentUser } = useContext(UserContext)
 
     /*****************************************************************************************************
      *****************************************************************************************************
@@ -58,10 +58,8 @@ export default function UserProfile() {
                 name: name.current.value,
                 firstname: firstname.current.value,
             }, { merge: true });
-
-            refreshUserDataProfile()
-
-            navigate("./UserDashboard");
+            // await delay(2000)
+            navigate("../cards");
         } catch (error) {
             console.log("Une erreur est survenue : ", error.name);
             console.log("Une erreur est survenue : ", error.message);
@@ -80,10 +78,10 @@ export default function UserProfile() {
                     <form action="#">
                         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                             <div className="w-full">
-                                <Input id={"name"} ref={name} title={"Nom"} placeholder={"Votre nom"} defaultValue={currentUserDataProfile.name} required={true} />
+                                <Input id={"name"} ref={name} title={"Nom"} placeholder={"Votre nom"} required={true} />
                             </div>
                             <div className="w-full">
-                                <Input id={"firstname"} ref={firstname} title={"Prénom"} placeholder={"Votre prénom"} defaultValue={currentUserDataProfile.firstname} required={true} />
+                                <Input id={"firstname"} ref={firstname} title={"Prénom"} placeholder={"Votre prénom"} required={true} />
                             </div>
                             {/* <div className="w-full">
                                 <Input id={"pseudo"} ref={pseudo} title={"Pseudonyme"} placeholder={"Votre pseudonyme"} />
