@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../../firebase-config";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, or, setDoc, updateDoc } from "firebase/firestore";
 import Spinner from "../../../components/Spinner";
 import Input from "../../../components/Input"
 import { UserContext } from '../../../context/userContext'
@@ -21,6 +21,7 @@ export default function UserProfile() {
      *****************************************************************************************************
     *****************************************************************************************************/
     const [addingCardToFirestore, setAddingCardToFirestore] = useState(false);
+    const [userProfileFields, setUserProfileFields] = useState({ name: "", firstname: "" });
 
     /*****************************************************************************************************
      *****************************************************************************************************
@@ -51,6 +52,45 @@ export default function UserProfile() {
     const updateProfile = async (e) => {
         e.preventDefault();
 
+        let validationsOk = true
+
+        if (name.current.value === "") {
+            userProfileFields.name = "border-red-500 dark:border-red-500"
+            validationsOk = false
+        }
+        else userProfileFields.name = ""
+
+        if (firstname.current.value === "") {
+            userProfileFields.firstname = "border-red-500 dark:border-red-500"
+            validationsOk = false
+        }
+        else userProfileFields.firstname = ""
+
+
+        console.log(userProfileFields);
+        if (validationsOk === false) {
+            return
+        }
+
+        name.current.value === "" ? userProfileFields.name = "border-red-500 dark:border-red-500" : true
+
+        //         setUserProfileFields([...userProfileFields].push({ name: "border-red-500 dark:border-red-500" }))
+        //     return;
+        // }
+        //     else {
+        //     setValidationMail("")
+        //     setSignUpEmailAddClass("")
+        // }
+        // if (name.current.value === "" || firstname.current.value === "") {
+        //     setValidationMail(validEmail.ruleLabel)
+        //     setSignUpEmailAddClass("border-red-500 dark:border-red-500")
+        //     return;
+        // }
+        // else {
+        //     setValidationMail("")
+        //     setSignUpEmailAddClass("")
+        // }
+
         setAddingCardToFirestore(true);
 
         try {
@@ -70,6 +110,12 @@ export default function UserProfile() {
         setAddingCardToFirestore(false);
     };
 
+    /*****************************************************************************************************
+     *****************************************************************************************************
+     * RENDER
+     *****************************************************************************************************
+    *****************************************************************************************************/
+
     return (
         <>
             <section className="flex">
@@ -80,10 +126,10 @@ export default function UserProfile() {
                     <form action="#">
                         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                             <div className="w-full">
-                                <Input id={"name"} ref={name} title={"Nom"} placeholder={"Votre nom"} defaultValue={currentUserDataProfile.name} required={true} />
+                                <Input id={"name"} ref={name} title={"Nom"} placeholder={"Votre nom"} defaultValue={currentUserDataProfile.name} required={true} addClass={userProfileFields.name} />
                             </div>
                             <div className="w-full">
-                                <Input id={"firstname"} ref={firstname} title={"Prénom"} placeholder={"Votre prénom"} defaultValue={currentUserDataProfile.firstname} required={true} />
+                                <Input id={"firstname"} ref={firstname} title={"Prénom"} placeholder={"Votre prénom"} defaultValue={currentUserDataProfile.firstname} required={true} addClass={userProfileFields.firstname} />
                             </div>
                             {/* <div className="w-full">
                                 <Input id={"pseudo"} ref={pseudo} title={"Pseudonyme"} placeholder={"Votre pseudonyme"} />

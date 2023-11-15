@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, browserSessionPersistence, signInWithPopup, signInWithRedirect, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth"
 import { auth, db } from "../firebase-config"
 import { setDoc, doc, getDoc } from "firebase/firestore";
 
@@ -40,8 +40,8 @@ export function UserContextProvider(props) {
         const unsubscribe = onAuthStateChanged(auth, (currUser) => {
             setCurrentUser(currUser)
             setLoadingData(false)
-            console.log("onAuthStateChanged")
-            console.log("currentUser.uid :", currUser.uid)
+            // console.log("onAuthStateChanged")
+            // console.log("currentUser.uid :", currUser.uid)
 
             if (currUser) {
                 //refreshUserDataProfile() -> ne fonctionne pas je ne comprends pas pourquoi ... le state currentUser n'a probablement pas le temps te de se mettre à jour
@@ -200,34 +200,24 @@ export function UserContextProvider(props) {
     const signInWithGooglePopup = async () => {
 
         try {
-            const res = await signInWithPopup(auth, googleProvider);
-            const user = res.user;
-            // const q = query(collection(db, "users"), where("uid", "==", user.uid));
-            // const docs = await getDocs(q);
-            // if (docs.docs.length === 0) {
-            //     await addDoc(collection(db, "users"), {
-            //         authProvider: "google",
-            //         email: user.email,
-            //     });
-            // }
-            console.log("user.uid", user.uid)
-            doc(db, "users", user.uid).then((doc) => console.log("doc", doc))
+            // signInWithRedirect(auth, googleProvider);
+            // const userCred = await getRedirectResult(auth)
+            // console.log(userCred)
+            const userCred = await signInWithPopup(auth, googleProvider);
+            const user = userCred.user;
 
-            await addDoc(doc(db, "users", user.uid), {
+            await setDoc(doc(db, "users", user.uid), {
                 uid: user.uid,
                 authProvider: "google",
                 email: user.email,
-            })
+            }, { merge: true })
 
             toggleModals("close")
             navigate("/pages/private/userProfile")
         } catch (error) {
             console.log("Une erreur est survenue : ", error.name);
             console.log("Une erreur est survenue : ", error.message);
-            //console.log("Email utilisé : ", error.customData.email);
-            //console.log("The AuthCredential type that was used : ", GoogleAuthProvider.credentialFromError(error));
         }
-
 
         // VERSION DE GOOGLE (permet d'acceder à l'API mais je n'en vois pas l'utilité pour le moment)
         // signInWithPopup(auth, provider)
