@@ -51,7 +51,7 @@ export default function UserProfile() {
      *****************************************************************************************************
     *****************************************************************************************************/
 
-    const forceUpdate = useForceUpdate();
+    //const forceUpdate = useForceUpdate();
 
     /**************************************************************************
     * Validation du formulaire d'inscription
@@ -64,54 +64,7 @@ export default function UserProfile() {
 
         name.current.value === "" ? validationsOk = false : true
         firstname.current.value === "" ? validationsOk = false : true
-
-        // if (name.current.value === "") {
-        //     inputStyles.name = "border-red-500 dark:border-red-500 focus:outline-none focus:ring focus:ring-red-100"
-        //     setInputStyles({ ...inputStyles })
-
-        // peut etre réduit à setInputStyles({ ...inputStyles, name = "border-red-500 dark:border-red-500 focus:outline-none focus:ring focus:ring-red-100" })
-
-        //     validationsOk = false
-        // }
-        // else {
-        //     inputStyles.name = "focus:outline-none focus:ring focus:border-blue-500"
-        //     setInputStyles({ ...inputStyles })
-        // }
-
-        // if (name.current.value === "") {
-        //     inputStyles.name = "border-red-500 dark:border-red-500 focus:outline-none focus:ring focus:ring-red-100"
-        //     setInputStyles({ ...inputStyles })
-
-        //     validationsOk = false
-        // }
-        // else {
-        //     inputStyles.name = "focus:outline-none focus:ring focus:border-blue-500"
-        //     setInputStyles({ ...inputStyles })
-        // }
-
-        //console.log(inputStyles);
-
-        if (validationsOk === false) {
-            forceUpdate()
-            return
-        }
-
-        //         setInputStyles([...inputStyles].push({ name: "border-red-500 dark:border-red-500" }))
-        //     return;
-        // }
-        //     else {
-        //     setValidationMail("")
-        //     setSignUpEmailAddClass("")
-        // }
-        // if (name.current.value === "" || firstname.current.value === "") {
-        //     setValidationMail(validEmail.ruleLabel)
-        //     setSignUpEmailAddClass("border-red-500 dark:border-red-500")
-        //     return;
-        // }
-        // else {
-        //     setValidationMail("")
-        //     setSignUpEmailAddClass("")
-        // }
+        if (validationsOk === false) { return }
 
         setAddingCardToFirestore(true);
 

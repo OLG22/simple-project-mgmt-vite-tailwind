@@ -1,8 +1,10 @@
-import React, { forwardRef } from "react"
+import React, { forwardRef, useState } from "react"
 
 const Input = forwardRef(function ({ type = "text", id, title, placeholder, defaultValue = "", required = false, addClass = "" }, ref) {
 
+    const [inputValue, setinputValue] = useState(defaultValue)
 
+    const handleOnChange = () => { setinputValue(ref.current.value) }
 
     return (
         <>
@@ -17,12 +19,13 @@ const Input = forwardRef(function ({ type = "text", id, title, placeholder, defa
                 type={type}
                 name={id}
                 id={id}
-                defaultValue={defaultValue}
+                value={inputValue}
                 className={`block w-full p-2.5 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900
-                ${(required && self.value === "") ? "border-red-500 dark:border-red-500 focus:outline-none focus:ring focus:ring-red-100" : "focus:outline-none focus:ring focus:border-blue-500"}
+                ${(required && ref.current.value === "") ? "border-red-500 dark:border-red-500 focus:outline-none focus:ring focus:ring-red-100" : "focus:outline-none focus:ring focus:border-blue-500"}
                 ${addClass}`}
                 placeholder={placeholder}
                 required={required}
+                onChange={handleOnChange}
             //focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500
 
             />
