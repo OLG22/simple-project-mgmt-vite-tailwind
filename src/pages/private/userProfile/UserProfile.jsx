@@ -7,6 +7,12 @@ import Input from "../../../components/Input"
 import { UserContext } from '../../../context/userContext'
 
 
+function useForceUpdate() {
+    const [, setToggle] = useState(false);
+    console.log("forceupdate")
+    return () => setToggle(toggle => !toggle);
+}
+
 export default function UserProfile() {
     /*****************************************************************************************************
      *****************************************************************************************************
@@ -21,7 +27,7 @@ export default function UserProfile() {
      *****************************************************************************************************
     *****************************************************************************************************/
     const [addingCardToFirestore, setAddingCardToFirestore] = useState(false);
-    const [userProfileFields, setUserProfileFields] = useState({ name: "", firstname: "" });
+    const [inputStyles, setInputStyles] = useState({ name: "", firstname: "" });
 
     /*****************************************************************************************************
      *****************************************************************************************************
@@ -45,6 +51,8 @@ export default function UserProfile() {
      *****************************************************************************************************
     *****************************************************************************************************/
 
+    const forceUpdate = useForceUpdate();
+
     /**************************************************************************
     * Validation du formulaire d'inscription
     **************************************************************************/
@@ -54,27 +62,41 @@ export default function UserProfile() {
 
         let validationsOk = true
 
-        if (name.current.value === "") {
-            userProfileFields.name = "border-red-500 dark:border-red-500"
-            validationsOk = false
-        }
-        else userProfileFields.name = ""
+        name.current.value === "" ? validationsOk = false : true
+        firstname.current.value === "" ? validationsOk = false : true
 
-        if (firstname.current.value === "") {
-            userProfileFields.firstname = "border-red-500 dark:border-red-500"
-            validationsOk = false
-        }
-        else userProfileFields.firstname = ""
+        // if (name.current.value === "") {
+        //     inputStyles.name = "border-red-500 dark:border-red-500 focus:outline-none focus:ring focus:ring-red-100"
+        //     setInputStyles({ ...inputStyles })
 
+        // peut etre réduit à setInputStyles({ ...inputStyles, name = "border-red-500 dark:border-red-500 focus:outline-none focus:ring focus:ring-red-100" })
 
-        console.log(userProfileFields);
+        //     validationsOk = false
+        // }
+        // else {
+        //     inputStyles.name = "focus:outline-none focus:ring focus:border-blue-500"
+        //     setInputStyles({ ...inputStyles })
+        // }
+
+        // if (name.current.value === "") {
+        //     inputStyles.name = "border-red-500 dark:border-red-500 focus:outline-none focus:ring focus:ring-red-100"
+        //     setInputStyles({ ...inputStyles })
+
+        //     validationsOk = false
+        // }
+        // else {
+        //     inputStyles.name = "focus:outline-none focus:ring focus:border-blue-500"
+        //     setInputStyles({ ...inputStyles })
+        // }
+
+        //console.log(inputStyles);
+
         if (validationsOk === false) {
+            forceUpdate()
             return
         }
 
-        name.current.value === "" ? userProfileFields.name = "border-red-500 dark:border-red-500" : true
-
-        //         setUserProfileFields([...userProfileFields].push({ name: "border-red-500 dark:border-red-500" }))
+        //         setInputStyles([...inputStyles].push({ name: "border-red-500 dark:border-red-500" }))
         //     return;
         // }
         //     else {
@@ -126,10 +148,10 @@ export default function UserProfile() {
                     <form action="#">
                         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
                             <div className="w-full">
-                                <Input id={"name"} ref={name} title={"Nom"} placeholder={"Votre nom"} defaultValue={currentUserDataProfile.name} required={true} addClass={userProfileFields.name} />
+                                <Input id={"name"} ref={name} title={"Nom"} placeholder={"Votre nom"} defaultValue={currentUserDataProfile.name} required={true} addClass={inputStyles.name} />
                             </div>
                             <div className="w-full">
-                                <Input id={"firstname"} ref={firstname} title={"Prénom"} placeholder={"Votre prénom"} defaultValue={currentUserDataProfile.firstname} required={true} addClass={userProfileFields.firstname} />
+                                <Input id={"firstname"} ref={firstname} title={"Prénom"} placeholder={"Votre prénom"} defaultValue={currentUserDataProfile.firstname} required={true} addClass={inputStyles.firstname} />
                             </div>
                             {/* <div className="w-full">
                                 <Input id={"pseudo"} ref={pseudo} title={"Pseudonyme"} placeholder={"Votre pseudonyme"} />
