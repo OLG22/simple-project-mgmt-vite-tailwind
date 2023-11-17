@@ -47,9 +47,11 @@ export function UserContextProvider(props) {
                 //refreshUserDataProfile() -> ne fonctionne pas je ne comprends pas pourquoi ... le state currentUser n'a probablement pas le temps te de se mettre à jour
                 const userData = getDoc(doc(db, "users", currUser.uid))
                     .then((userProfle) => { setCurrentUserDataProfile(userProfle.data()) })
+                console.log("useEffect context ok", currentUserDataProfile)
             }
             else {
                 setCurrentUserDataProfile([])
+                console.log("useEffect context ko", currentUserDataProfile)
             }
 
         })

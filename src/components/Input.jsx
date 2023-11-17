@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from "react"
 
-const Input = forwardRef(function ({ type = "text", id, title, placeholder, defaultValue = "", required = false, addClass = "" }, ref) {
+const InputText = forwardRef(function ({ id, title, placeholder, defaultValue = "", required = false, addClass = "" }, ref) {
 
     const [inputValue, setinputValue] = useState(defaultValue)
 
@@ -16,7 +16,7 @@ const Input = forwardRef(function ({ type = "text", id, title, placeholder, defa
             </label>
             <input
                 ref={ref}
-                type={type}
+                type="text"
                 name={id}
                 id={id}
                 value={inputValue}
@@ -33,4 +33,4 @@ const Input = forwardRef(function ({ type = "text", id, title, placeholder, defa
     )
 })
 
-export default Input
+export default InputText
