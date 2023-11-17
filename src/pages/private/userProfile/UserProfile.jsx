@@ -138,12 +138,6 @@ export default function UserProfile() {
                                         {!addingCardToFirestore && ("Mettre à jour")}
                                     </button>
                                 </div>
-
-                                <div className="w-full flex justify-end items-center">
-                                    <button type="button" className="w-28 flex font-medium rounded-lg text-[12px] px-5 py-2 my-5 text-center justify-center text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80" onClick={() => console.log("test :", currentUserDataProfile)}>
-                                        Test
-                                    </button>
-                                </div>
                             </form>
                         )}
                     {!currentUserDataProfile.uid && (
