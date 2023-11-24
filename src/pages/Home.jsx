@@ -14,15 +14,14 @@ export default function Home() {
      * CONTEXT
      *****************************************************************************************************
     *****************************************************************************************************/
-    const { currentUser, currentUserDataProfile, refreshUserDataProfile } = useContext(UserContext)
+    //const { currentUser, currentUserDataProfile, refreshUserDataProfile } = useContext(UserContext)
 
     /*****************************************************************************************************
      *****************************************************************************************************
      * STATES
      *****************************************************************************************************
     *****************************************************************************************************/
-    const [addingCardToFirestore, setAddingCardToFirestore] = useState(false);
-    const [addClass, setAddClass] = useState({ name: "", firstname: "" });
+    const [loading, setLoading] = useState(false);
 
     /*****************************************************************************************************
      *****************************************************************************************************
@@ -30,9 +29,27 @@ export default function Home() {
      *****************************************************************************************************
     *****************************************************************************************************/
     useEffect(() => {
-        refreshUserDataProfile()
-        console.log(currentUserDataProfile)
+        const getAllCards = async () => {
+            setLoading(true);
 
+            try {
+                await getDocs(collection(db, "subjects")).then((querySnapshot) => {
+                    const data = querySnapshot.docs.map((doc) => doc.id);
+                    setCardsData([...data]); // Il faut déstructurer le tableau pour le restructurer dans un tableau afin que le state fonctionne, on ne peut pas utiliser directement data
+                });
+
+                //await delay(1000)
+                //console.log("1. cardsData :", cardsData);
+            }
+            catch (error) {
+                console.log("Une erreur est survenue : ", error.name);
+                console.log("Une erreur est survenue : ", error.message);
+            }
+
+            setLoading(false);
+        }
+
+        getAllCards();
     }, [])
 
     /*****************************************************************************************************
@@ -40,9 +57,7 @@ export default function Home() {
      * REFERENCES
      *****************************************************************************************************
     *****************************************************************************************************/
-    const name = useRef("name");
-    const firstname = useRef("firstname");
-    //const pseudo = useRef("pseudo");
+
 
     /*****************************************************************************************************
      *****************************************************************************************************
@@ -57,8 +72,6 @@ export default function Home() {
      *****************************************************************************************************
     *****************************************************************************************************/
 
-
-    let loading = false
 
     return (
         <div className="py-5 px-10 w-full ">

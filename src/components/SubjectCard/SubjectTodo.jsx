@@ -3,7 +3,7 @@ import { db } from "../../firebase-config";
 import { doc, getDocs, collection, addDoc, query, orderBy, deleteDoc } from "firebase/firestore";
 import Spinner from "../Spinner";
 
-export default function SubjectTodo({ subjectId }) {
+export default function SubjectTodo({ subjectId, setVisibility }) {
   /*****************************************************************************************************
    *****************************************************************************************************
    * STATES
@@ -30,7 +30,17 @@ export default function SubjectTodo({ subjectId }) {
     getTasks()
     //console.log("tasks :", tasks);
     //Par défaut si la liste des tâches est vide on affiche le formulaire de saisie
-    tasks.length === 0 ? setAddingTaskForm(true) : setAddingTaskForm(false)
+    if (tasks.length === 0) {
+      setAddingTaskForm(true)
+      setVisibility(true)
+      console.log("render of todo : if")
+    }
+    else {
+      setAddingTaskForm(false)
+      setVisibility(true)
+      console.log("render of todo : else")
+    }
+
   }, []);
 
   /*****************************************************************************************************
@@ -113,10 +123,10 @@ export default function SubjectTodo({ subjectId }) {
    *****************************************************************************************************
    * RENDER
    *****************************************************************************************************
-  *****************************************************************************************************/
+   *****************************************************************************************************/
   return (
     <>
-      <div className="mx-auto mb-5 w-2/3 border-t border-gray-200 group-hover:border-gray-100" ></div>
+      <div className="hidden mx-auto mb-5 w-2/3 border-t border-gray-200 group-hover:border-gray-100" ></div>
       <div className={`relative group mb-5 p-2 text-base text-gray-700 dark:text-gray-400 border rounded-lg border-yellow-200 bg-yellow-100 text-justify font-normal`}>
         <ul>
           {tasks.map((task) => (

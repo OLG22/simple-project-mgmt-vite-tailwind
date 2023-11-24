@@ -17,6 +17,7 @@ export default function SubjectCard({ subjectId }) {
   const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [modifyingElement, setModifyingElement] = useState();
+  const [visibilityTodo, setVisibilityTodo] = useState(true);
 
   /*****************************************************************************************************
    *****************************************************************************************************
@@ -141,28 +142,6 @@ export default function SubjectCard({ subjectId }) {
     setUpdating(undefined);
   }
 
-  /**************************************************************************
-  * Modifier une descripion de sujet
-  **************************************************************************/
-  const modifyDescription = async (e, subjectId) => {
-    e.preventDefault();
-    setUpdating(subjectId);
-
-    try {
-      await updateDoc(doc(db, "subjects", subjectId), {
-        description: updateContentSubject.current.value
-      })
-      await getHistorical()
-      getSubjectMainData()
-    }
-    catch (error) {
-      console.log("Une erreur est survenue : ", error.name);
-      console.log("Une erreur est survenue : ", error.message);
-    }
-
-    setModifyingElement(undefined)
-    setUpdating(undefined);
-  }
 
   /**************************************************************************
   * Ouvrir ou ferme le forumlaire de modification d'une note de l'historique
@@ -193,6 +172,13 @@ export default function SubjectCard({ subjectId }) {
     //console.log("historical :", historical)
   };
 
+  /**************************************************************************
+  * Gérer l'expansion de la carte
+  **************************************************************************/
+  const toggleVisibilityTodo = async () => {
+    setVisibilityTodo(!visibilityTodo);
+  };
+
 
   /*****************************************************************************************************
    *****************************************************************************************************
@@ -202,7 +188,7 @@ export default function SubjectCard({ subjectId }) {
 
   return (
     <>
-      <div className="w-auto mx-auto max-w-5xl px-4 my-2 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+      <div className="w-full px-4 my-2 bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
 
         <div className="flex justify-center items-center">
           {/* Titre */}
@@ -234,8 +220,10 @@ export default function SubjectCard({ subjectId }) {
             {/* Description */}
             <SubjectDescription subjectId={subjectId} modifyingElement={modifyingElement} toggleModifyingElement={toggleModifyingElement} />
 
-            {/* Todo */}
-            <SubjectTodo subjectId={subjectId} />
+            {/* visibilityTodo */}
+            {visibilityTodo && (
+              <SubjectTodo subjectId={subjectId} setVisibility={setVisibilityTodo} />
+            )}
 
             {/* Historique */}
             {!loading && (
@@ -319,10 +307,14 @@ export default function SubjectCard({ subjectId }) {
                           </span>
                         </>
                       )}
-                      {updating !== "addHistorical" && ("Mettre à jour le sujet")}
+                      {updating !== "addHistorical" && ("Mettre à jour l'action")}
                     </button>
 
                   </form>
+                  <button type="submit" className="flex font-medium rounded-lg text-[12px] px-5 py-2 my-5 text-center justify-center text-white bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:focus:ring-yellow-800 shadow-lg shadow-yellow-500/50 dark:shadow-lg dark:shadow-yellow-800/80"
+                    onClick={toggleVisibilityTodo}>
+                    {!visibilityTodo ? "Ajouter une Todo" : "Masquer la Todo"}
+                  </button>
                 </div>
               </>
             )}

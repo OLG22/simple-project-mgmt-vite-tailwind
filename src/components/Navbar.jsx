@@ -9,7 +9,8 @@ export default function Navbar() {
     const menuNavBar = [
         { name: "Accueil", target: "/" },
         { name: "Mon profil", target: "/pages/private/userProfile" },
-        { name: "Sujets", target: "/pages/private/cards" },
+        { name: "Mon espace", target: "/pages/private/PrivateHome" },
+        { name: "Les actions", target: "/pages/private/cards" },
         { name: "Contact", target: "/" },
     ]
 

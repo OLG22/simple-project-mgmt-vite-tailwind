@@ -3,6 +3,7 @@ import { UserContext } from '../context/userContext'
 import { validPassword, validEmail } from './Regex'
 
 
+
 export default function SignUpModal() {
     /*****************************************************************************************************
      *****************************************************************************************************
@@ -191,6 +192,9 @@ export default function SignUpModal() {
                         </svg>
                         <label htmlFor="policies" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">En vous inscrivant, vous créez un compte sur notre site et vous acceptez nos <a href="#" className="font-medium text-blue-600 hover:underline dark:text-blue-500">conditions d'utilisation</a> et notre <a href="#" className="font-medium text-blue-600 hover:underline dark:text-blue-500">politique privée</a></label>
                     </div>
+
+                    {/* On utilise pas la box classique car on a besoin d'insérer des liens dans le label */}
+                    {/* <Checkbox disabled={false} defaultChecked={false} id={"policies"} label={"En vous inscrivant, ..."} missingMadatory={false} color={"blue"} /> */}
 
                 </form>
                 {/* Fin du bloc dynamique */}
