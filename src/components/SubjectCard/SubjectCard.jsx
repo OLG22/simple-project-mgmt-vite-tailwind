@@ -1,11 +1,32 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { db } from "../../firebase-config";
 import { doc, addDoc, getDoc, getDocs, collection, query, orderBy, deleteDoc, updateDoc } from "firebase/firestore";
 import Spinner, { delay } from "../Spinner";
 import SubjectTodo from "./SubjectTodo";
 import SubjectDescription from "./SubjectDescription";
+import { UserContext } from '../../context/userContext'
+
+
+
+async function getSpecificUserdata({userId}){
+    try {
+      const response = await getDoc(doc(db, "users", userId));
+      setSubjectInfo(response.data())
+    }
+    catch (error) {
+      console.log("Une erreur est survenue : ", error.name);
+      console.log("Une erreur est survenue : ", error.message);
+    }
+}
 
 export default function SubjectCard({ subjectId }) {
+  /*****************************************************************************************************
+   *****************************************************************************************************
+   * CONTEXT
+   *****************************************************************************************************
+  *****************************************************************************************************/
+  const { currentUser, currentUserDataProfile } = useContext(UserContext);
+  
   /*****************************************************************************************************
    *****************************************************************************************************
    * STATES
@@ -92,9 +113,10 @@ export default function SubjectCard({ subjectId }) {
       try {
         const docRef = await addDoc(collection(doc(db, "subjects", subjectId), "historical"), {
           description: updateContent.current.value,
-          userId: "Virginie",
+          userId: currentUser.uid,
           updateDate: new Date()
         });
+        console.log(currentUser)
         await getHistorical()
       } catch (error) {
         console.log("Une erreur est survenue : ", error.name);
@@ -180,6 +202,8 @@ export default function SubjectCard({ subjectId }) {
   };
 
 
+console.log(getDoc(doc(db, "users", "rxrw32qIa7WcyuV6Cf7ZsMhzLPd2")));
+
   /*****************************************************************************************************
    *****************************************************************************************************
    * RENDER
@@ -234,7 +258,7 @@ export default function SubjectCard({ subjectId }) {
                   <div className="flex justify-between items-center">
 
                     <span className="text-[12px] px-3 rounded bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-[1px] border-blue-200 ">
-                      {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {historicalDoc.data().userId} a écrit :
+                      {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {getDoc(doc(db, "users", historicalDoc.data().userId)).data().name} a écrit :
                     </span>
 
                     <div className="mr-2">
@@ -258,7 +282,7 @@ export default function SubjectCard({ subjectId }) {
                   {/* MODIFY HISTORICAL */}
                   <div className="">
                     {modifyingElement !== historicalDoc.id && (
-                      <p className="w-full pb-2 px-2.5 text-sm text-justify text-gray-500 dark:text-gray-400">
+                      <p className="w-full pb-2 px-2.5 text-sm text-justify text-gray-500 dark:text-gray-400 whitespace-pre-wrap">
                         {historicalDoc.data().description}
                       </p>
                     )}

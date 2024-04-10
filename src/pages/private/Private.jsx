@@ -11,8 +11,8 @@ export default function Private() {
   }
 
   return (
-    <div className="">
+    //<div className="">
       <Outlet />
-    </div>
+    //</div>
   );
 }

@@ -85,7 +85,7 @@ export default function SubjectDescription({ subjectId, modifyingElement, toggle
             {modifyingElement !== subjectId + "_description" && (
                 <>
                     <p className="pt-5 border-t border-gray-200"></p>
-                    <div className="relative group mb-5 p-2 text-base text-gray-700 dark:text-gray-400 border rounded-lg border-sky-200 bg-sky-50 text-justify font-medium">
+                    <div className="relative group mb-5 p-2 text-base text-gray-700 dark:text-gray-400 border rounded-lg border-sky-200 bg-sky-50 text-justify font-medium whitespace-pre-wrap">
                         {subjectDescription}
                         <div className="absolute right-2 -top-3 group-hover:border-t group-hover:border-x rounded-t-lg group-hover:border-sky-200 group-hover:bg-sky-50 w-6 h-3 ">
                         </div>

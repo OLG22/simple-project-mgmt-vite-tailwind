@@ -1,11 +1,12 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../firebase-config";
-import { doc, or, setDoc, updateDoc } from "firebase/firestore";
+import { doc, or, setDoc, updateDoc, getDocs } from "firebase/firestore";
 import Spinner from "../components/Spinner";
 import InputText from "../components/Input"
 import { UserContext } from '../context/userContext'
 import SubjectCard from '../components/SubjectCard/SubjectCard'
+import { Navigate } from "react-router-dom";
 
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
      *****************************************************************************************************
     *****************************************************************************************************/
     //const { currentUser, currentUserDataProfile, refreshUserDataProfile } = useContext(UserContext)
+    const { currentUser } = useContext(UserContext);
 
     /*****************************************************************************************************
      *****************************************************************************************************
@@ -25,7 +27,7 @@ export default function Home() {
 
     /*****************************************************************************************************
      *****************************************************************************************************
-     * STATES
+     * EFFECT
      *****************************************************************************************************
     *****************************************************************************************************/
     useEffect(() => {
@@ -72,6 +74,10 @@ export default function Home() {
      *****************************************************************************************************
     *****************************************************************************************************/
 
+
+    if (currentUser) {
+        return <Navigate to="/pages/private/cards" />;
+    }
 
     return (
         <div className="py-5 px-10 w-full ">
