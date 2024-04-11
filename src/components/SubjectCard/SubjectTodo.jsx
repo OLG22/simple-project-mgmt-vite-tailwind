@@ -1,9 +1,17 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { db } from "../../firebase-config";
 import { doc, getDocs, collection, addDoc, query, orderBy, deleteDoc } from "firebase/firestore";
 import Spinner from "../Spinner";
+import { UserContext } from '../../context/userContext'
 
 export default function SubjectTodo({ subjectId, setVisibility }) {
+  /*****************************************************************************************************
+   *****************************************************************************************************
+   * CONTEXT
+   *****************************************************************************************************
+  *****************************************************************************************************/
+   const { currentUser, currentUserDataProfile } = useContext(UserContext);
+
   /*****************************************************************************************************
    *****************************************************************************************************
    * STATES
@@ -90,8 +98,9 @@ export default function SubjectTodo({ subjectId, setVisibility }) {
       try {
         const docRef = await addDoc(collection(doc(db, "subjects", subjectId), "tasks"), {
           description: newTaskContent.current.value,
-          userId: "Régis",
-          createdDate: new Date()
+          userId: currentUser.uid,
+          createdDate: new Date(),
+          done: false
         });
         newTaskContent.current.value = ""
         await getTasks()
@@ -117,6 +126,27 @@ export default function SubjectTodo({ subjectId, setVisibility }) {
       console.log("Une erreur est survenue : ", error.name);
       console.log("Une erreur est survenue : ", error.message);
     }
+  };
+
+  /**************************************************************************
+  * Coche une tache comme faite
+  **************************************************************************/
+  const toggleDoneTask = async (taskId) => {
+
+
+
+      try {
+        await updateDoc(doc(db, "subjects", subjectId, "tasks", taskId), {
+          done: true
+      })
+
+        await getTasks()
+      } catch (error) {
+        console.log("Une erreur est survenue : ", error.name);
+        console.log("Une erreur est survenue : ", error.message);
+      }
+
+
   };
 
   /*****************************************************************************************************
