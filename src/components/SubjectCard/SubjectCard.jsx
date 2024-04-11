@@ -80,6 +80,20 @@ export default function SubjectCard({ subjectId }) {
   }
 
   /**************************************************************************
+  * Obtenir les données d'un user spécifique
+  **************************************************************************/
+  async function getSpecificUserdata({userId}){
+    try {
+      const response = await getDoc(doc(db, "users", userId));
+      //setSubjectInfo(response.data())
+    }
+    catch (error) {
+      console.log("Une erreur est survenue : ", error.name);
+      console.log("Une erreur est survenue : ", error.message);
+    }
+}
+
+  /**************************************************************************
   * Obtenir l'historique
   **************************************************************************/
   const getHistorical = async () => {
@@ -258,7 +272,7 @@ console.log(getDoc(doc(db, "users", "rxrw32qIa7WcyuV6Cf7ZsMhzLPd2")));
                   <div className="flex justify-between items-center">
 
                     <span className="text-[12px] px-3 rounded bg-gray-50 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-[1px] border-blue-200 ">
-                      {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {getDoc(doc(db, "users", historicalDoc.data().userId)).data().name} a écrit :
+                      {new Date(historicalDoc.data().updateDate.seconds * 1000).toLocaleDateString("fr-FR")} - {historicalDoc.data().userId} a écrit :
                     </span>
 
                     <div className="mr-2">
