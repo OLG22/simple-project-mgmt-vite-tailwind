@@ -124,7 +124,7 @@ export function UserContextProvider(props) {
     const signIn = (email, pwd) => {
         setPersistence(auth, persistenceMode ? browserLocalPersistence : browserSessionPersistence)
             .then(() => signInWithEmailAndPassword(auth, email, pwd))
-            .then(() => navigate("/pages/private/privateHome"))
+            .then(() => navigate("/pages/private/cards"))
     }
 
     /**************************************************************************
@@ -199,6 +199,8 @@ export function UserContextProvider(props) {
     * Inscription / connexion par google
     **************************************************************************/
     const googleProvider = new GoogleAuthProvider();
+    //Permet de forcer la fenetre de selection de compte (lorsqu'il n'y a qu'un compte google connecté cela le selectionne automatiquement)
+    googleProvider.setCustomParameters({prompt: 'select_account'})
     const signInWithGooglePopup = async () => {
 
         try {
@@ -215,7 +217,7 @@ export function UserContextProvider(props) {
             }, { merge: true })
 
             toggleModals("close")
-            navigate("/pages/private/userProfile")
+            navigate("/pages/private/cards")
         } catch (error) {
             console.log("Une erreur est survenue : ", error.name);
             console.log("Une erreur est survenue : ", error.message);
